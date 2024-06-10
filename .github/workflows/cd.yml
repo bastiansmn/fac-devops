@@ -9,8 +9,6 @@ on:
 
 jobs:
   build-and-push-docker-image:
-    # NOTE: Ni build, ni push d'images tant que les tests ne sont pas passés
-    needs: test-backend
     # run only when code is compiling and tests are passing
     runs-on: ubuntu-22.04
 
