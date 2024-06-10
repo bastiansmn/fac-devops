@@ -18,8 +18,7 @@ jobs:
         uses: actions/checkout@v2.5.0
 
       - name: Login to DockerHub
-        run: |
-          echo ${{ secrets.DOCKERHUB_USERNAME }} | docker login --username ${{ secrets.DOCKERHUB_PASSWORD }} --password-stdin
+        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build image and push backend
         uses: docker/build-push-action@v3
@@ -27,7 +26,7 @@ jobs:
           # relative path to the place where source code with Dockerfile is located
           context: ./backend-api
           # Note: tags has to be all lower-case
-          tags: ${{secrets.DOCKERHUB_USERNAME}}/tp1-back:latest
+          tags: ${{secrets.DOCKER_USERNAME}}/tp1-back:latest
           # build on feature branches, push only on main branch
           push: ${{ github.ref == 'refs/heads/main' }}
 
@@ -37,7 +36,7 @@ jobs:
           # relative path to the place where source code with Dockerfile is located
           context: ./db
           # Note: tags has to be all lower-case
-          tags: ${{secrets.DOCKERHUB_USERNAME}}/tp1-db:latest
+          tags: ${{secrets.DOCKER_USERNAME}}/tp1-db:latest
           # build on feature branches, push only on main branch
           push: ${{ github.ref == 'refs/heads/main' }}
 
@@ -47,7 +46,7 @@ jobs:
           # relative path to the place where source code with Dockerfile is located
           context: ./frontend
           # Note: tags has to be all lower-case
-          tags: ${{secrets.DOCKERHUB_USERNAME}}/tp1-front:latest
+          tags: ${{secrets.DOCKER_USERNAME}}/tp1-front:latest
           # build on feature branches, push only on main branch
           push: ${{ github.ref == 'refs/heads/main' }}
 
