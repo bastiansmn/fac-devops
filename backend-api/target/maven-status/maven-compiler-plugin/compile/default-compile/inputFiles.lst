@@ -1,0 +1,10 @@
+/Users/bastian/FAC/M2/DevOps/TP1/backend-api/src/main/java/fr/takima/training/simpleapi/dao/DepartmentDAO.java
+/Users/bastian/FAC/M2/DevOps/TP1/backend-api/src/main/java/fr/takima/training/simpleapi/controller/GreetingController.java
+/Users/bastian/FAC/M2/DevOps/TP1/backend-api/src/main/java/fr/takima/training/simpleapi/service/StudentService.java
+/Users/bastian/FAC/M2/DevOps/TP1/backend-api/src/main/java/fr/takima/training/simpleapi/controller/StudentController.java
+/Users/bastian/FAC/M2/DevOps/TP1/backend-api/src/main/java/fr/takima/training/simpleapi/controller/DepartmentController.java
+/Users/bastian/FAC/M2/DevOps/TP1/backend-api/src/main/java/fr/takima/training/simpleapi/entity/Department.java
+/Users/bastian/FAC/M2/DevOps/TP1/backend-api/src/main/java/fr/takima/training/simpleapi/entity/Student.java
+/Users/bastian/FAC/M2/DevOps/TP1/backend-api/src/main/java/fr/takima/training/simpleapi/dao/StudentDAO.java
+/Users/bastian/FAC/M2/DevOps/TP1/backend-api/src/main/java/fr/takima/training/simpleapi/SimpleApiApplication.java
+/Users/bastian/FAC/M2/DevOps/TP1/backend-api/src/main/java/fr/takima/training/simpleapi/service/DepartmentService.java

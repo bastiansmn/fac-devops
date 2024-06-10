@@ -1,0 +1,32 @@
+version: "3"
+
+services:
+  adminer:
+    container_name: tp1-db-adminer
+    image: adminer
+    ports:
+      - 8080:8080
+    networks:
+      - data-network
+
+  postgres:
+    container_name: tp1-db-postgres
+    image: tp1/db
+    environment:
+      - POSTGRES_DB=db
+      - POSTGRES_USER=usr
+      - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
+    volumes:
+      - data:/var/lib/postgresql/data
+    networks:
+      - data-network
+      - backend-network
+
+volumes:
+  data:
+
+networks:
+  data-network:
+    driver: bridge
+  backend-network:
+    external: true

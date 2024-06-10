@@ -1,0 +1,65 @@
+version: "3"
+
+services:
+  httpd:
+    build:
+      context: frontend
+    container_name: tp1-front
+    image: tp1/front
+    ports:
+      - 81:80
+    networks:
+      - frontend-network
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: backend-api
+    container_name: tp1-back
+    image: tp1/back
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://tp1-db-postgres:5432/db
+      - SPRING_DATASOURCE_USERNAME=usr
+      - SPRING_DATASOURCE_PASSWORD=$POSTGRES_PASSWORD
+    networks:
+      - backend-network
+      - frontend-network
+    depends_on:
+      - postgres
+
+  adminer:
+    container_name: tp1-db-adminer
+    image: adminer
+    ports:
+      - 8080:8080
+    networks:
+      - data-network
+    depends_on:
+      - postgres
+
+  postgres:
+    build:
+      context: db
+    container_name: tp1-db-postgres
+    image: tp1/db
+    environment:
+      - POSTGRES_DB=db
+      - POSTGRES_USER=usr
+      - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    networks:
+      - data-network
+      - backend-network
+
+volumes:
+  db-data:
+
+networks:
+  data-network:
+    driver: bridge
+  backend-network:
+    driver: bridge
+  frontend-network:
+    driver: bridge
