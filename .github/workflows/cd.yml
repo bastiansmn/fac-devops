@@ -6,6 +6,8 @@ on:
       - CI devops 2024
     types:
       - completed
+    branches:
+      - main
 
 jobs:
   build-and-push-docker-image:
