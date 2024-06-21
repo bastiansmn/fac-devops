@@ -52,4 +52,72 @@ On créé alors un network différent du précédent, dans mon cas `backend-netw
 
 # TP2
 
+## Setup GitHub Actions
 
+Nous utilisons la commande `mvn clean verify` pour tester notre code. Celle-ci démarre les "testcontainers", permettant de tester notre application. Ils permettent de "mocker" les services de notre applications tels que la base de donnée, etc. De plus, ils permettent une isolation des tests pour une meilleure reproductibilité et un meilleur parallélisme.
+
+J'ai eu un problème lors de la configuration car j'utilisais Rancher Desktop. En passant sur Docker Desktop, les tests ont été concluants.
+
+Dans nos fichiers `.yml` de GitHub Actions, nous allons utiliser la ["login-action"](https://github.com/docker/login-action) pour avoir une certaine cohérence dans l'utilisation des actions externes.
+
+Les secrets ont bien été initialisés dans l'onglet Settings > Secrets and variables > Actions > Repository secrets. 
+
+Pour commencer, nous allons préciser que le push sur Docker Hub ne s'effectue que sur la branche `main` via l'attribut : `push: ${{ github.ref == 'refs/heads/main' }}`. Nous changerons cette méthode plus tard.
+
+## Setup SonarCloud
+
+Après avoir créé un compte connecté à mon identifiant GitHub, j'ai créé un projet lié à des GitHub Actions depuis l'onglet SonarCloud. Ce dernier m'a très simplement donné la configuration nécessaire à ajouter dans mon fichier pom.xml et à ajouter dans mes actions GitHub. On y remarque un bloc supplémentaire : 
+
+```yaml
+#### CONFIGURATION BY SONAR ####
+      - name: Cache SonarCloud packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+      - name: Cache Maven packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+      #### ENF OF CONFIGURATION BY SONAR ####
+```
+
+Ici, on met en cache certains artefacts afin de réduire le temps de build.
+
+Après avoir ajouté le `SONAR_TOKEN` aux secrets, la CI/CD est maintenant complètement fonctionnelle.
+
+## Split pipelines
+
+Il ne reste plus qu'à créer deux pipelines distinctes, une pour la partie validation ([ci.yml](./.github/workflows/ci.yml)) et une autre pour la partie déploiement ([cd.yml](./.github/workflows/cd.yml)).
+
+Il faut préciser que le déploiement ne doit s'exécuter que lorsque l'exécution de la CI est réussie et uniquement sur la branche `main`. Ainsi, on doit modifier la clé `on:` :
+
+```yaml
+on:
+  workflow_run:
+    workflows:
+      - CI devops 2024
+    types:
+      - completed
+    branches:
+      - main
+```
+
+La CI quand a elle conserve : 
+
+```yaml
+on: 
+  push:
+    branches:
+      - main
+      - develop
+```
+
+On se rend vite compte qu'un push sur la branche `main` lance le workflow d'intégration puis le workflow de déploiement si l'integration réussie. Cependant, un push sur la branche `develop` ne lance que le workflow d'intégration.
+
+On peut confirmer que les images Docker sont bien présentes et mises à jour sur la plateforme Docker Hub.
+
+À noter que les images sont toutes tagués `latest`. Il serait idéal de les taguer avec le numéro de commit git par exemple, sinon on perd tout l’intérêt d'utiliser un VCS. 

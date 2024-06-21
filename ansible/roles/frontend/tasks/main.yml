@@ -1,0 +1,12 @@
+---
+# tasks file for roles/frontend
+- name: Create frontend container
+  community.docker.docker_container:
+    name: tp1-front
+    image: bastiansmn/tp1-front:latest
+    networks:
+      - name: back-front-network
+      - name: rp-front-network
+    network_mode: bridge
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
