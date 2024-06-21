@@ -1,0 +1,39 @@
+name: Ansible deployment
+on:
+  workflow_run:
+    workflows:
+      - CD devops 2024
+    types:
+      - completed
+    branches:
+      - main
+
+jobs:
+  run-ansible:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2.5.0
+
+      - name: Prepare private key
+        run: |
+          echo "${{ secrets.RSA_KEY }}" > ~/.ssh/id_rsa_takima
+
+      - name: Run Ansible playbook
+        uses: isweluiz/action-ansible-in-docker@v1.0.0
+        with:
+          playbookName: ansible/playbook.yml
+          inventoryFile: ansible/inventories/setup.yml
+          verbosity: vvv
+
+      # - name: Run Ansible playbook
+      #   uses: dawidd6/action-ansible-playbook@v2.8.0
+      #   with:
+      #     # Required, playbook filepath
+      #     playbook: ansible/playbook.yml
+      #     # Optional, directory where playbooks live
+      #     directory: ansible
+      #     key: "${{ secrets.RSA_KEY }}"
+      #     options: |
+      #       -i inventories/setup.yml
