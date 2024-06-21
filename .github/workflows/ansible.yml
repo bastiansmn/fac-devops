@@ -26,6 +26,7 @@ jobs:
         with:
           playbookName: ansible/playbook.yml
           inventoryFile: ansible/inventories/setup.yml
+          keyFile: ~/.ssh/id_rsa_takima
           verbosity: vvv
 
       # - name: Run Ansible playbook
