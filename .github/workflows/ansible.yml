@@ -16,17 +16,36 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2.5.0
 
-      - name: Prepare private key
-        run: |
-          echo "${{ secrets.RSA_KEY }}" > id_rsa_takima
-
-      - name: Run Ansible playbook
-        uses: isweluiz/ansible-in-docker-action@1.0.0
+      - name: Set up Python 2.7
+        uses: actions/setup-python@v1
         with:
-          playbookName: ansible/playbook.yml
-          inventoryFile: ansible/inventories/setup.yml
-          keyFile: id_rsa_takima
-          verbosity: vvv
+          python-version: 2.7
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install ansible==2.11.12 requests
+
+      - name: Set Ansible config secrets
+        env:
+          RSA_KEY: ${{ secrets.RSA_KEY }}
+        run: |
+          # echo "$RSA_KEY" > .ansible-vault-password
+          mkdir -p .ssh
+          echo "$RSA_KEY" > .ssh/id_rsa_takima
+          chmod 600 .ssh/id_rsa_takima
+
+      - name: run exporters playbook
+        run: |
+          ansible-playbook -i ansible/inventories/setup.yml ansible/playbook.yml
+
+      # - name: Run Ansible playbook
+      #   uses: isweluiz/ansible-in-docker-action@1.0.0
+      #   with:
+      #     playbookName: ansible/playbook.yml
+      #     inventoryFile: ansible/inventories/setup.yml
+      #     keyFile: id_rsa_takima
+      #     verbosity: vvv
 
       # - name: Run Ansible playbook
       #   uses: dawidd6/action-ansible-playbook@v2.8.0
