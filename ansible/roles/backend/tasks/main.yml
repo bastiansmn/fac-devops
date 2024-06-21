@@ -12,5 +12,7 @@
       - name: db-back-network
       - name: back-front-network
     network_mode: bridge
+    ports:
+      - "8080:8080"
   vars:
     ansible_python_interpreter: /usr/bin/python3

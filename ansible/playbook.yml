@@ -8,3 +8,4 @@
     - db
     - backend
     - frontend
+    - reverse-proxy
