@@ -16,10 +16,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2.5.0
 
-      - name: Set up Python 2.7
+      - name: Set up Python 3.7.17
         uses: actions/setup-python@v1
         with:
-          python-version: 2.7
+          python-version: 3.7.17
 
       - name: Install dependencies
         run: |
