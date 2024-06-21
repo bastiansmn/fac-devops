@@ -18,15 +18,14 @@ jobs:
 
       - name: Prepare private key
         run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.RSA_KEY }}" > ~/.ssh/id_rsa_takima
+          echo "${{ secrets.RSA_KEY }}" > id_rsa_takima
 
       - name: Run Ansible playbook
         uses: isweluiz/ansible-in-docker-action@1.0.0
         with:
           playbookName: ansible/playbook.yml
           inventoryFile: ansible/inventories/setup.yml
-          keyFile: ~/.ssh/id_rsa_takima
+          keyFile: id_rsa_takima
           verbosity: vvv
 
       # - name: Run Ansible playbook
