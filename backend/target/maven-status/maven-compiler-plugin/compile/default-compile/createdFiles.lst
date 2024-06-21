@@ -1,3 +1,3 @@
 fr/takima/training/simpleapi/SimpleapiApplication.class
-src/main/java/fr/takima/training/simpleapi/controller/GreetingController.class
-src/main/java/fr/takima/training/simpleapi/controller/GreetingController$Greeting.class
+fr/takima/training/simpleapi/controller/GreetingController.class
+fr/takima/training/simpleapi/controller/GreetingController$Greeting.class
