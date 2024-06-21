@@ -1,0 +1,17 @@
+---
+# tasks file for roles/db
+- name: Create DB container
+  community.docker.docker_container:
+    name: tp1-db-postgres
+    image: bastiansmn/tp1-db:latest
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    env:
+      POSTGRES_DB: db
+      POSTGRES_USER: usr
+      POSTGRES_PASSWORD: "{{ lookup('env', 'POSTGRES_PASSWORD') }}"
+    networks:
+      - name: db-back-network
+    network_mode: bridge
+  vars:
+    ansible_python_interpreter: /usr/bin/python3

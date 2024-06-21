@@ -46,7 +46,33 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           # relative path to the place where source code with Dockerfile is located
+          context: ./reverse-proxy
+          # Note: tags has to be all lower-case
+          tags: ${{secrets.DOCKER_USERNAME}}/tp1-rp:latest
+          push: true
+
+      - name: Build image and push httpd
+        uses: docker/build-push-action@v3
+        with:
+          # relative path to the place where source code with Dockerfile is located
           context: ./frontend
           # Note: tags has to be all lower-case
           tags: ${{secrets.DOCKER_USERNAME}}/tp1-front:latest
           push: true
+  
+  # deploy-with-ansible:
+  #   needs: build-and-push-docker-image
+  #   runs-on: ubuntu-22.04
+
+  #   steps:
+  #     - name: Prepare private key
+  #       run: |
+  #         echo "${{ secrets.RSA_KEY }}" > ~/.ssh/id_rsa_takima
+
+  #     - name: Run Ansible playbook
+  #       uses: dawidd6/action-ansible-playbook@v2.8.0
+  #       with:
+  #         # Required, playbook filepath
+  #         playbook: ansible/playbook.yml
+  #         # Optional, directory where playbooks live
+  #         directory: ansible

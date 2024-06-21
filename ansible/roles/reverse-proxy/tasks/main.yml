@@ -1,0 +1,13 @@
+---
+# tasks file for roles/frontend
+- name: Create RP container
+  community.docker.docker_container:
+    name: tp1-rp
+    image: bastiansmn/tp1-rp:latest
+    networks:
+      - name: rp-front-network
+    network_mode: bridge
+    ports: 
+      - "80:80"
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
