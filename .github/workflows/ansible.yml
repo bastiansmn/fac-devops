@@ -31,7 +31,7 @@ jobs:
           RSA_KEY: ${{ secrets.RSA_KEY }}
         run: |
           # echo "$RSA_KEY" > .ansible-vault-password
-          mkdir -p .ssh
+          mkdir -p ~/.ssh
           echo "$RSA_KEY" > ~/.ssh/id_rsa_takima
           chmod 600 ~/.ssh/id_rsa_takima
 
