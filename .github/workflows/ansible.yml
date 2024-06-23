@@ -16,11 +16,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2.5.0
 
-      # - name: Set up Python 2.10
-      #   uses: actions/setup-python@v1
-      #   with:
-      #     python-version: 2.10
-
       - name: Install dependencies
         run: |
           python --version
@@ -28,12 +23,10 @@ jobs:
           pip install ansible==2.10.7 requests
 
       - name: Set Ansible config secrets
-        env:
-          RSA_KEY: ${{ secrets.RSA_KEY }}
         run: |
           # echo "$RSA_KEY" > .ansible-vault-password
           mkdir -p ~/.ssh
-          echo "$RSA_KEY" > ~/.ssh/id_rsa_takima
+          echo "${{ secrets.RSA_KEY }}" > ~/.ssh/id_rsa_takima
           chmod 600 ~/.ssh/id_rsa_takima
 
       - name: run exporters playbook
@@ -41,23 +34,5 @@ jobs:
           ls -lart ~/.ssh
           cat ~/.ssh/id_rsa_takima
           export ANSIBLE_HOST_KEY_CHECKING=False
+          export POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
           ansible-playbook -vvvvvv -i ansible/inventories/setup.yml ansible/playbook.yml
-
-      # - name: Run Ansible playbook
-      #   uses: isweluiz/ansible-in-docker-action@1.0.0
-      #   with:
-      #     playbookName: ansible/playbook.yml
-      #     inventoryFile: ansible/inventories/setup.yml
-      #     keyFile: id_rsa_takima
-      #     verbosity: vvv
-
-      # - name: Run Ansible playbook
-      #   uses: dawidd6/action-ansible-playbook@v2.8.0
-      #   with:
-      #     # Required, playbook filepath
-      #     playbook: ansible/playbook.yml
-      #     # Optional, directory where playbooks live
-      #     directory: ansible
-      #     key: "${{ secrets.RSA_KEY }}"
-      #     options: |
-      #       -i inventories/setup.yml
