@@ -37,7 +37,9 @@ jobs:
 
       - name: run exporters playbook
         run: |
-          ansible-playbook -i ansible/inventories/setup.yml ansible/playbook.yml
+          ls -lart ~/.ssh
+          cat ~/.ssh/id_rsa_takima
+          ansible-playbook -vvvvvv -i ansible/inventories/setup.yml ansible/playbook.yml
 
       # - name: Run Ansible playbook
       #   uses: isweluiz/ansible-in-docker-action@1.0.0
