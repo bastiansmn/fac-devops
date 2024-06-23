@@ -39,6 +39,7 @@ jobs:
         run: |
           ls -lart ~/.ssh
           cat ~/.ssh/id_rsa_takima
+          export ANSIBLE_HOST_KEY_CHECKING=False
           ansible-playbook -vvvvvv -i ansible/inventories/setup.yml ansible/playbook.yml
 
       # - name: Run Ansible playbook
