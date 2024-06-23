@@ -5,9 +5,9 @@
   vars_files:
     - vars/db.yml
   roles:
-    - docker
-    - docker-network
-    - db
-    - backend
-    - frontend
+    # - docker
+    # - docker-network
+    # - db
+    # - backend
+    # - frontend
     - reverse-proxy
