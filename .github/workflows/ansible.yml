@@ -32,5 +32,5 @@ jobs:
       - name: run exporters playbook
         run: |
           export ANSIBLE_HOST_KEY_CHECKING=False
-          export POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
-          ansible-playbook -i ansible/inventories/setup.yml ansible/playbook.yml
+          echo "${{ secrets.ANSIBLE_VAULT_PASSWORD }}" > .ansible-vault-password
+          ansible-playbook -i ansible/inventories/setup.yml ansible/playbook.yml --vault-password-file=.ansible-vault-password

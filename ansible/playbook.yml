@@ -2,6 +2,8 @@
   gather_facts: false
   become: true
 
+  vars_files:
+    - vars/db.yml
   roles:
     - docker
     - docker-network

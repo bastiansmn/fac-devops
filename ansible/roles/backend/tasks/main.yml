@@ -7,7 +7,7 @@
     env:
       SPRING_DATASOURCE_URL: jdbc:postgresql://tp1-db-postgres:5432/db
       SPRING_DATASOURCE_USERNAME: usr
-      SPRING_DATASOURCE_PASSWORD: "{{ lookup('env', 'POSTGRES_PASSWORD') }}"
+      SPRING_DATASOURCE_PASSWORD: "{{ pg_password }}"
     networks:
       - name: db-back-network
       - name: back-front-network
