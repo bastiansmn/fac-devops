@@ -16,6 +16,7 @@
   vars:
     ansible_python_interpreter: /usr/bin/python3
 
+# Deuxième instance
 - name: Create backend-2 container
   community.docker.docker_container:
     name: tp1-back-2

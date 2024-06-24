@@ -134,4 +134,15 @@ On commence par initialiser le playbook avec les commandes de bases pour initial
 
 ## Roles
 
-La commande d'initialisation du rôle créé un dossier contenant un grand nombre de fichiers. Cependant, nous n'avons 
+La commande d'initialisation du rôle créé un dossier contenant un grand nombre de fichiers. Cependant, nous n'avons besoin que d'un fichier dans les répertoires `tasks` de chaque role.
+On y trouve donc les différentes actions à effectuer, souvent simplifiées grâce aux modules Ansible.
+
+## Front
+
+La seule modification apportée au front est la modification de la variable `VUE_APP_API_URL`. On la change pour la valeur suivante :
+
+```bash
+VUE_APP_API_URL=bastian.somon.takima.cloud/api
+```
+
+Ainsi, lors d'un appel au backend, la requête retournera bien vers la VM. Cependant, en l'état, les requêtes ne sont pas bien dirigées. Il nous faut un reverse proxy.
