@@ -24,7 +24,6 @@ jobs:
 
       - name: Set Ansible config secrets
         run: |
-          # echo "$RSA_KEY" > .ansible-vault-password
           mkdir -p ~/.ssh
           echo "${{ secrets.RSA_KEY }}" > ~/.ssh/id_rsa_takima
           chmod 600 ~/.ssh/id_rsa_takima

@@ -132,6 +132,8 @@ Dans le fichier [setup.yml](ansible/inventories/setup.yml), on spécifie le chem
 
 On commence par initialiser le playbook avec les commandes de bases pour initialiser Docker. Ensuite, pour mieux factoriser le code, on va initialiser des "roles" pour chaque action principale (initialisation de Docker, création des networks, DB, ...).
 
+Dans le déploiement via GitHub Actions, il a été nécessaire d'activer `export ANSIBLE_HOST_KEY_CHECKING=False` pour éviter à la commande `ssh` de demander une validation sur le terminal.
+
 ## Roles
 
 La commande d'initialisation du rôle créé un dossier contenant un grand nombre de fichiers. Cependant, nous n'avons besoin que d'un fichier dans les répertoires `tasks` de chaque role.
@@ -147,4 +149,60 @@ VUE_APP_API_URL=bastian.somon.takima.cloud/api
 
 Ainsi, lors d'un appel au backend, la requête retournera bien vers la VM. Cependant, en l'état, les requêtes ne sont pas bien dirigées. Il nous faut un reverse proxy.
 
+## Reverse Proxy (RP)
 
+Dans la configuration apache, il faut bien penser à activer tous les modules en décommentant les bonnes lignes (mod_proxy, mod_proxy_http, ...). On aura aussi besoin de mod_rewrite.
+
+On créé un VirtualHost contenant les règles de routage :
+
+```conf
+<VirtualHost *:80>
+    ServerName http://bastian.somon.takima.cloud/
+
+    # Activer le module Rewrite pour ce VirtualHost
+    RewriteEngine On
+
+    # Load Balancer pour les requêtes /api/
+    <Proxy "balancer://mycluster">
+        BalancerMember http://tp1-back-1:8080
+        BalancerMember http://tp1-back-2:8080
+        ProxySet lbmethod=byrequests
+    </Proxy>
+
+    # Rediriger les requêtes /api/ vers le load balancer
+    RewriteRule ^/api/(.*)$ balancer://mycluster/$1 [P,L]
+
+    # Rediriger les requêtes /api/ vers le load balancer
+    ProxyPass /api balancer://mycluster/
+    ProxyPassReverse /api balancer://mycluster/
+
+    # Rediriger les autres requêtes vers tp1-front:80
+    ProxyPass / http://tp1-front:80/
+    ProxyPassReverse / http://tp1-front:80/
+</VirtualHost>
+```
+
+On spécifie le ServerName pour dire d'écouter tout le traffic entrant sur cette URL, puis on précise que les routes en / doivent être dirigées vers le front, et celles commencant par /api doivent être redirigées vers le back. 
+
+À noter la mise en place du LoadBalancing via un `Proxy` contenant deux `BalancerMember`, en l’occurrence les deux instances déployées via Ansible. Le LoadBalancing est effectif via une répartition de charge équitable. Pas d'affinité de session car non nécessaire pour l'application, un des cas pouvant nécessité de l'affinité de session est par exemple lorsqu'il y a de la persistence en mémoire non partagée par les deux instances. Auquel cas on pourrait vouloir que nos requêtes aillent toujours vers l'instance contenant les données en mémoire. Ici, on a bien une application StateLess car aucune donnée n'est transitée pour permettre un LoadBalancing (exemple: cookie de session).
+
+## Ansible Vault
+
+Nous avons des variables à cacher (le mot de passe de la base de donnée). On va donc utiliser Ansible Vault pour le chiffrer. 
+
+Tout d'abord on créé un fichier [vars/db.yml](ansible/vars/db.yml) contenant les variables à cacher. Ici j'ai ajouté aussi le user et le nom de la DB mais ceci n'est pas absolument nécessaire car c'est plutôt de la configuration que des secrets.
+
+On peut ensuite exécuter la commande 
+
+```bash
+ansible-vault encrypt vars/db.yml
+```
+
+On doit spécifier le mot de passe (ici `titi`) et le fichier devient illisible.
+
+Il est possible d'utiliser la commande `view` pour visualiser les variables, ou encore `decrypt` pour modifier le fichier après l'avoir déchiffré. 
+On modifie ensuite le déploiement pour que le mot de passe soit écrit dans un fichier temporaire (via un secret GitHub). Dès lors, la commande `ansible-playbook` doit contenir l'argument `--vault-password-file=<fichier>`.
+
+Maintenant, nous avons une CI/CD complètement fonctionnelle. On peut le tester en pushant une modification sur Git, les jobs se déclenchent bien et on peut vérifier le bon fonctionnement sur la VM [http://bastian.somon.takima.cloud/](http://bastian.somon.takima.cloud/).
+
+Il a juste été nécessaire de créer un script sur la VM qui nettoyait le conteneurs Docker. En effet, l'image n'était pas toujours pull donc la modification de la CI non effective.
