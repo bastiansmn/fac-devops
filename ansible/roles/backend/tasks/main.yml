@@ -1,8 +1,24 @@
 ---
 # tasks file for roles/backend
-- name: Create backend container
+- name: Create backend-1 container
   community.docker.docker_container:
-    name: tp1-back
+    name: tp1-back-1
+    image: bastiansmn/tp1-back:latest
+    env:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://tp1-db-postgres:5432/db
+      SPRING_DATASOURCE_USERNAME: usr
+      SPRING_DATASOURCE_PASSWORD: "{{ pg_password }}"
+    networks:
+      - name: db-back-network
+      - name: back-front-network
+      - name: rp-front-network
+    network_mode: bridge
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+
+- name: Create backend-2 container
+  community.docker.docker_container:
+    name: tp1-back-2
     image: bastiansmn/tp1-back:latest
     env:
       SPRING_DATASOURCE_URL: jdbc:postgresql://tp1-db-postgres:5432/db
