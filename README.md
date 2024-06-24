@@ -146,3 +146,5 @@ VUE_APP_API_URL=bastian.somon.takima.cloud/api
 ```
 
 Ainsi, lors d'un appel au backend, la requête retournera bien vers la VM. Cependant, en l'état, les requêtes ne sont pas bien dirigées. Il nous faut un reverse proxy.
+
+

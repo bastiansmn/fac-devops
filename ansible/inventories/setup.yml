@@ -1,12 +1,8 @@
 all:
   vars:
-    # VM user
     ansible_user: centos
-    # RSA priv key file path
     ansible_ssh_private_key_file: ~/.ssh/id_rsa_takima
-    # Ansible python interpreter
     ansible_python_interpreter: /usr/bin/python
   children:
     prod:
-      # VM URL
       hosts: bastian.somon.takima.cloud
