@@ -206,3 +206,9 @@ On modifie ensuite le déploiement pour que le mot de passe soit écrit dans un 
 Maintenant, nous avons une CI/CD complètement fonctionnelle. On peut le tester en pushant une modification sur Git, les jobs se déclenchent bien et on peut vérifier le bon fonctionnement sur la VM [http://bastian.somon.takima.cloud/](http://bastian.somon.takima.cloud/).
 
 Il a juste été nécessaire de créer un script sur la VM qui nettoyait le conteneurs Docker. En effet, l'image n'était pas toujours pull donc la modification de la CI non effective.
+
+# Conclusion 
+
+Nous avons donc maintenant un mini-projet fonctionnel et déployé avec de l'intégration et du déploiement continu. Il ne reste plus grand chose à améliorer si ce n'est du monitoring. Je n'ai pas eu le temps de déployer Grafan notamment car même la commande `ansible-galaxy` ne fonctionnait pas.
+On pourrait aussi mettre en place un système de version pour éviter de taguer les images Docker par `latest` à chaque build.
+Enfin, on pourrait améliorer le build pour que si on ne fait des changements que sur le dossier `frontend`, seul le build et le déploiement adéquat soit lancé. Cette problématique se retrouve dans tous les mono-repo.
