@@ -121,3 +121,17 @@ On se rend vite compte qu'un push sur la branche `main` lance le workflow d'int�
 On peut confirmer que les images Docker sont bien présentes et mises à jour sur la plateforme Docker Hub.
 
 À noter que les images sont toutes tagués `latest`. Il serait idéal de les taguer avec le numéro de commit git par exemple, sinon on perd tout l’intérêt d'utiliser un VCS. 
+
+# TP3
+
+## Inventories
+
+Dans le fichier [setup.yml](ansible/inventories/setup.yml), on spécifie le chemin de la clé privée RSA. On utilise un chemin relatif au dossier `$HOME`. En exécutant la commande `ansible all -i inventories/setup.yml -m ping`, on obtient bien le statut 'SUCCESS'.
+
+## Playbook
+
+On commence par initialiser le playbook avec les commandes de bases pour initialiser Docker. Ensuite, pour mieux factoriser le code, on va initialiser des "roles" pour chaque action principale (initialisation de Docker, création des networks, DB, ...).
+
+## Roles
+
+La commande d'initialisation du rôle créé un dossier contenant un grand nombre de fichiers. Cependant, nous n'avons 
